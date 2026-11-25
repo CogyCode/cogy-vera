@@ -1,0 +1,22 @@
+[Unit]
+Description=Cogy Vera (CogyServer's verifier)
+After=network-online.target tailscaled.service @MODEL_SERVICE_NAME@.service @FIREWALL_SERVICE_NAME@.service
+Wants=network-online.target @MODEL_SERVICE_NAME@.service
+Requires=tailscaled.service @FIREWALL_SERVICE_NAME@.service
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+Group=@SERVICE_USER@
+ExecStart=/usr/bin/python3 @PREFIX@/vera/vera.py --config @PREFIX@/vera/vera.json
+# Also covers the private address not being up yet at boot.
+Restart=always
+RestartSec=10
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=@LOG_DIR@
+
+[Install]
+WantedBy=multi-user.target

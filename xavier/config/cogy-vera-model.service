@@ -1,0 +1,26 @@
+[Unit]
+Description=Cogy Vera model (llama.cpp on CUDA)
+After=network-online.target
+Wants=network-online.target
+RequiresMountsFor=@DATA_DIR@
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+Group=@SERVICE_USER@
+SupplementaryGroups=video render
+# Thinking is off; a request can pass chat_template_kwargs {"enable_thinking": true}.
+ExecStart=@PREFIX@/llama/bin/llama-server -m @MODEL_PATH@ --alias @MODEL_ID@ \
+    --host 127.0.0.1 --port @MODEL_PORT@ --ctx-size @CTX_SIZE@ --parallel @PARALLEL@ \
+    -ngl @GPU_LAYERS@ -b @BATCH@ -ub @UBATCH@ --cache-ram @CACHE_RAM@ \
+    --jinja --no-webui --reasoning off
+Restart=always
+RestartSec=10
+# Reads its model and writes nothing. Its log is in the journal.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

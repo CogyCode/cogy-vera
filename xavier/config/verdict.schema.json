@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "analysis": { "type": "string" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "problem": { "type": "string" },
+          "fix": { "type": "string" }
+        },
+        "required": ["file", "line", "problem", "fix"],
+        "additionalProperties": false
+      }
+    },
+    "summary": { "type": "string" },
+    "verdict": { "type": "string", "enum": ["approve", "changes"] }
+  },
+  "required": ["analysis", "findings", "summary", "verdict"],
+  "additionalProperties": false
+}

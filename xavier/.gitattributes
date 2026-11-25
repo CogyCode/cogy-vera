@@ -1,0 +1,4 @@
+# This build runs on Linux: keep LF line endings in every checkout, including
+# a Windows one with core.autocrlf, so the scripts and systemd units still
+# work when copied to the Xavier.
+* text=auto eol=lf

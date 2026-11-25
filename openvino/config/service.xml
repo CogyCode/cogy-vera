@@ -1,0 +1,26 @@
+<!--
+  WinSW service definition for Vera's code (vera\vera.py).
+  install.ps1 fills in the @...@ values and installs it next to WinSW.
+-->
+<service>
+  <id>@SERVICE_NAME@</id>
+  <name>@DISPLAY_NAME@</name>
+  <description>@DESCRIPTION@</description>
+  <executable>@PYTHON@</executable>
+  <arguments>-u "@VERA_PY@" --config "@VERA_CONFIG@"</arguments>
+  <workingdirectory>@VERA_DIR@</workingdirectory>
+  <depend>@OVMS_SERVICE@</depend>
+  <depend>Tailscale</depend>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <resetfailure>1 day</resetfailure>
+  <stoptimeout>15 sec</stoptimeout>
+  <logpath>@LOG_DIR@</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>5120</sizeThreshold>
+    <keepFiles>3</keepFiles>
+  </log>
+</service>

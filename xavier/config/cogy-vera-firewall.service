@@ -1,0 +1,18 @@
+[Unit]
+Description=Cogy Vera firewall (port @PORT@ from @ALLOW_FROM@ only)
+Before=network-pre.target
+Wants=network-pre.target
+
+# The rule is in the raw table because that runs before the filter table, where
+# Tailscale accepts everything from the private network and puts its own chain
+# first each time it restarts. Traffic on loopback stays allowed for the checks
+# in scripts/. It is also why this is not IPAddressDeny=: this kernel has no
+# CONFIG_CGROUP_BPF, so systemd would ignore that setting.
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/iptables -w -t raw -I PREROUTING -p tcp --dport @PORT@ ! -i lo ! -s @ALLOW_FROM@ -j DROP
+ExecStop=/usr/sbin/iptables -w -t raw -D PREROUTING -p tcp --dport @PORT@ ! -i lo ! -s @ALLOW_FROM@ -j DROP
+
+[Install]
+WantedBy=multi-user.target
